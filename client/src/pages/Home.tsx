@@ -12,16 +12,15 @@ import {
   Heart,
   Home as HomeIcon,
   KeyRound,
-  Menu,
   MoveUpRight,
   Search,
   ShieldCheck,
   Sparkles,
   Star,
-  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { startLogin } from "@/const";
+import StaggeredMenu, { type StaggeredMenuItem } from "@/components/StaggeredMenu";
 
 type Property = {
   src: string;
@@ -88,6 +87,13 @@ const properties: Property[] = [
     tag: "House",
     detail: "A considered four-bedroom with a shaded courtyard, smart storage, and room for the people you want to keep close.",
   },
+];
+
+const mobileMenuItems: StaggeredMenuItem[] = [
+  { label: "Explore homes", ariaLabel: "Explore available homes", link: "#explore" },
+  { label: "Find a roommate", ariaLabel: "Find a roommate", link: "#roommates" },
+  { label: "Stories", ariaLabel: "Read Nestly stories", link: "#stories" },
+  { label: "Sign in", ariaLabel: "Sign in to Nestly", link: "/onboarding" },
 ];
 
 const trustPoints = [
@@ -271,7 +277,6 @@ function FlipCard({ item, index }: { item: Property; index: number }) {
 }
 
 function Home() {
-  const [mobileMenu, setMobileMenu] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
   const featured = useMemo(() => properties.slice(0, 4), []);
@@ -302,20 +307,17 @@ function Home() {
           <span className="brand-mark"><span /><span /></span>
           <span>Nestly</span>
         </a>
-        <nav className={`main-nav ${mobileMenu ? "is-open" : ""}`} aria-label="Main navigation">
-          <a href="#explore" onClick={() => setMobileMenu(false)}>Explore homes</a>
-          <a href="#roommates" onClick={(event) => { event.preventDefault(); setMobileMenu(false); showInterest("Roommate matching is coming next"); }}>Find a roommate</a>
-          <a href="#stories" onClick={() => setMobileMenu(false)}>Stories</a>
-          <button type="button" className="mobile-nav-login" onClick={() => { setMobileMenu(false); startLogin(); }}>Sign in</button>
+        <nav className="main-nav" aria-label="Main navigation">
+          <a href="#explore">Explore homes</a>
+          <a href="#roommates" onClick={(event) => { event.preventDefault(); showInterest("Roommate matching is coming next"); }}>Find a roommate</a>
+          <a href="#stories">Stories</a>
         </nav>
         <div className="header-actions">
           <button type="button" className="text-button header-login" onClick={() => startLogin()}>Sign in</button>
           <button type="button" className="button button--dark button--small" onClick={() => { window.location.href = "/owner"; }}>List your place <ArrowUpRight size={15} /></button>
         </div>
-        <button type="button" className="mobile-menu-button" onClick={() => setMobileMenu((value) => !value)} aria-label={mobileMenu ? "Close menu" : "Open menu"}>
-          {mobileMenu ? <X size={22} /> : <Menu size={22} />}
-        </button>
       </header>
+      <StaggeredMenu items={mobileMenuItems} socialItems={[{ label: "hello@nestly.place", link: "mailto:hello@nestly.place" }]} colors={["#d9e3d3", "#bc7d5b"]} accentColor="#bc7d5b" />
 
       <main id="top">
         <section className="hero-section">
