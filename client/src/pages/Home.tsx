@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
+import { startLogin } from "@/const";
 
 type Property = {
   src: string;
@@ -303,13 +304,13 @@ function Home() {
         </a>
         <nav className={`main-nav ${mobileMenu ? "is-open" : ""}`} aria-label="Main navigation">
           <a href="#explore" onClick={() => setMobileMenu(false)}>Explore homes</a>
-          <a href="#how-it-works" onClick={() => setMobileMenu(false)}>How it works</a>
-          <a href="#owners" onClick={() => setMobileMenu(false)}>For owners</a>
+          <a href="#roommates" onClick={(event) => { event.preventDefault(); setMobileMenu(false); showInterest("Roommate matching is coming next"); }}>Find a roommate</a>
           <a href="#stories" onClick={() => setMobileMenu(false)}>Stories</a>
+          <button type="button" className="mobile-nav-login" onClick={() => { setMobileMenu(false); startLogin(); }}>Sign in</button>
         </nav>
         <div className="header-actions">
-          <button type="button" className="text-button header-login" onClick={() => showInterest("Sign in is coming soon")}>Sign in</button>
-          <button type="button" className="button button--dark button--small" onClick={() => scrollToId("owners")}>List your place <ArrowUpRight size={15} /></button>
+          <button type="button" className="text-button header-login" onClick={() => startLogin()}>Sign in</button>
+          <button type="button" className="button button--dark button--small" onClick={() => { window.location.href = "/owner"; }}>List your place <ArrowUpRight size={15} /></button>
         </div>
         <button type="button" className="mobile-menu-button" onClick={() => setMobileMenu((value) => !value)} aria-label={mobileMenu ? "Close menu" : "Open menu"}>
           {mobileMenu ? <X size={22} /> : <Menu size={22} />}
@@ -325,7 +326,7 @@ function Home() {
               <p className="hero-subcopy">Homes, rooms, and housemates with a little more care behind them. Search less. Feel at home sooner.</p>
               <div className="hero-actions">
                 <button type="button" className="button button--peach" onClick={() => scrollToId("explore")}>Find my next place <ArrowUpRight size={17} /></button>
-                <button type="button" className="button button--ghost-light" onClick={() => scrollToId("owners")}>I have a place to list <ArrowRight size={17} /></button>
+                <button type="button" className="button button--ghost-light" onClick={() => { window.location.href = "/owner"; }}>I have a place to list <ArrowRight size={17} /></button>
               </div>
               <div className="hero-note"><span className="avatar-stack"><span>R</span><span>A</span><span>M</span><span>+</span></span><span>Trusted by people making their next move</span></div>
             </div>
@@ -376,7 +377,7 @@ function Home() {
 
         <section className="owner-section section-pad" id="owners" data-reveal="up">
           <div className="owner-visual"><div className="owner-image"><img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1400&q=85&auto=format&fit=crop" alt="Bright home interior ready for its next resident" /><div className="owner-image-note"><BadgeCheck size={18} /><span>Thoughtful homes<br /><strong>find good people</strong></span></div></div><div className="owner-badge"><span>For the<br /><em>people</em><br />with keys</span><ArrowUpRight size={20} /></div></div>
-          <div className="owner-copy"><span className="eyebrow">Have a place to share?</span><h2>Your space has a <em>story.</em></h2><p>Let’s tell it properly. Nestly helps owners show up with the right details, reach people who care, and make the next handover feel like a welcome.</p><ul><li><span><Check size={14} /></span>Qualify interest before you open the door</li><li><span><Check size={14} /></span>List with clear, honest information</li><li><span><Check size={14} /></span>Keep every conversation in one place</li></ul><button type="button" className="button button--dark" onClick={() => showInterest("Owner early access is open")}>List your place <ArrowUpRight size={17} /></button><span className="owner-footnote"><ShieldCheck size={15} /> No listing fee while we’re getting started</span></div>
+          <div className="owner-copy"><span className="eyebrow">Have a place to share?</span><h2>Your space has a <em>story.</em></h2><p>Let’s tell it properly. Nestly helps owners show up with the right details, reach people who care, and make the next handover feel like a welcome.</p><ul><li><span><Check size={14} /></span>Qualify interest before you open the door</li><li><span><Check size={14} /></span>List with clear, honest information</li><li><span><Check size={14} /></span>Keep every conversation in one place</li></ul><button type="button" className="button button--dark" onClick={() => { window.location.href = "/owner"; }}>List your place <ArrowUpRight size={17} /></button><span className="owner-footnote"><ShieldCheck size={15} /> No listing fee while we’re getting started</span></div>
         </section>
 
         <section className="closing-section section-pad" data-reveal="up"><div className="closing-inner"><span className="eyebrow">Your next place is out there</span><h2>Make room for <em>what’s next.</em></h2><p>Join the early list for thoughtful homes, honest listings, and a calmer way to move.</p><button type="button" className="button button--peach" onClick={() => showInterest("You’re on the early list")}>Join the early list <ArrowUpRight size={17} /></button><div className="closing-squiggle">⌁</div></div></section>

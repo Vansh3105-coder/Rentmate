@@ -8,6 +8,20 @@
       "when": 1788785580464,
       "tag": "0000_initial_users",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1793033206723,
+      "tag": "0001_tranquil_jack_power",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1793034359142,
+      "tag": "0002_faithful_shocker",
+      "breakpoints": true
     }
   ]
 }

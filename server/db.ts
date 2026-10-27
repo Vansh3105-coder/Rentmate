@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertOwnerVerification, InsertProperty, InsertUser, ownerVerifications, properties, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -34,7 +34,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     };
     const updateSet: Record<string, unknown> = {};
 
-    const textFields = ["name", "email", "loginMethod"] as const;
+    const textFields = ["name", "email", "phone", "loginMethod"] as const;
     type TextField = (typeof textFields)[number];
 
     const assignNullable = (field: TextField) => {
@@ -88,4 +88,55 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+export async function updateUserProfile(userId: number, profile: Pick<InsertUser, "name" | "phone" | "accountType" | "onboardingComplete">) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  await db.update(users).set(profile).where(eq(users.id, userId));
+  const updated = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  return updated[0];
+}
+
+export async function createOwnerVerification(verification: InsertOwnerVerification) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  const result = await db.insert(ownerVerifications).values(verification);
+  const created = await db.select().from(ownerVerifications).where(eq(ownerVerifications.id, result[0].insertId)).limit(1);
+  return created[0];
+}
+
+export async function getLatestOwnerVerification(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  const result = await db.select().from(ownerVerifications).where(eq(ownerVerifications.userId, userId)).orderBy(desc(ownerVerifications.submittedAt)).limit(1);
+  return result[0];
+}
+
+export async function getPropertiesByOwnerId(ownerId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  return db.select().from(properties).where(eq(properties.ownerId, ownerId)).orderBy(desc(properties.createdAt));
+}
+
+export async function createProperty(property: InsertProperty) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  const result = await db.insert(properties).values(property);
+  const created = await db.select().from(properties).where(eq(properties.id, result[0].insertId)).limit(1);
+  return created[0];
+}
+
+export async function updateProperty(ownerId: number, propertyId: number, property: Omit<InsertProperty, "ownerId" | "status">) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  await db.update(properties).set(property).where(and(eq(properties.id, propertyId), eq(properties.ownerId, ownerId)));
+  const updated = await db.select().from(properties).where(and(eq(properties.id, propertyId), eq(properties.ownerId, ownerId))).limit(1);
+  return updated[0];
+}
+
+export async function updatePropertyStatus(ownerId: number, propertyId: number, status: "draft" | "published" | "archived") {
+  const db = await getDb();
+  if (!db) throw new Error("Database is not available");
+  await db.update(properties).set({ status }).where(and(eq(properties.id, propertyId), eq(properties.ownerId, ownerId)));
+  const owned = await db.select().from(properties).where(and(eq(properties.id, propertyId), eq(properties.ownerId, ownerId))).limit(1);
+  return owned[0];
+}
