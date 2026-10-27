@@ -5,11 +5,25 @@ import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
+function createDatabaseClient(connectionString: string) {
+  const url = new URL(connectionString);
+  const sslMode = url.searchParams.get("ssl-mode")?.toLowerCase();
+
+  return {
+    host: url.hostname,
+    port: Number(url.port || 3306),
+    user: decodeURIComponent(url.username),
+    password: decodeURIComponent(url.password),
+    database: decodeURIComponent(url.pathname.replace(/^\//, "")),
+    ssl: sslMode && sslMode !== "disabled" ? { rejectUnauthorized: false } : undefined,
+  };
+}
+
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      _db = drizzle({ connection: createDatabaseClient(process.env.DATABASE_URL) }) as ReturnType<typeof drizzle>;
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
