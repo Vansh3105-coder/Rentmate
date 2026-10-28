@@ -21,6 +21,7 @@ import {
 import { toast } from "sonner";
 import { startLogin } from "@/const";
 import StaggeredMenu, { type StaggeredMenuItem } from "@/components/StaggeredMenu";
+import AccordionGallery from "@/components/AccordionGallery";
 
 type Property = {
   src: string;
@@ -280,6 +281,7 @@ function Home() {
   const [searchValue, setSearchValue] = useState("");
 
   const featured = useMemo(() => properties.slice(0, 4), []);
+  const accordionItems = useMemo(() => featured.map((property) => ({ image: property.src, label: property.title, link: "", alt: property.alt })), [featured]);
 
   useEffect(() => {
     const revealItems = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
@@ -369,7 +371,7 @@ function Home() {
 
         <section className="explore-section section-pad" id="explore" data-reveal="up">
           <div className="section-heading section-heading--row"><div><span className="eyebrow">A few good places</span><h2>Start with a feeling.</h2></div><a href="#explore" className="inline-link" onClick={(event) => { event.preventDefault(); showInterest("The full explore experience is coming soon"); }}>Explore all homes <ArrowUpRight size={16} /></a></div>
-          <div className="property-grid">{featured.map((property, index) => <article className="property-card" key={property.title} data-reveal="scale" style={{ "--reveal-delay": `${index * 90}ms` } as CSSProperties}><div className="property-image-wrap"><img src={property.src} alt={property.alt} /><span className="property-tag">{property.tag}</span><button type="button" className="property-heart" onClick={() => showInterest(`${property.title} saved to your shortlist`)} aria-label={`Save ${property.title}`}><Heart size={17} /></button></div><div className="property-card__body"><div><h3>{property.title}</h3><p>{property.subtitle}</p></div><strong>{property.price}</strong></div></article>)}</div>
+          <AccordionGallery items={accordionItems} defaultIndex={1} accentColor="#C27855" overlayColor="#1F1E1D" textColor="#FAF8F5" height={390} gap={12} radius={16} expandRatio={0.48} duration={0.6} parallax={0.45} tilt={5} trigger="hover" grayscale showLabels className="property-accordion" />
         </section>
 
         <section className="flip-section section-pad" id="stories" data-reveal="up">
