@@ -40,13 +40,16 @@ const AccordionGallery = ({
   const mediaRefs = useRef([]);
   const barRefs = useRef([]);
   const textRefs = useRef([]);
+  const detailRefs = useRef([]);
+  const infoRefs = useRef([]);
   const tlRef = useRef(null);
   const firstRunRef = useRef(true);
   const mediaSizeRef = useRef(320);
 
   const vertical = orientation === 'vertical';
   const count = items.length;
-  const [active, setActive] = useState(Math.min(Math.max(defaultIndex, 0), count - 1));
+  const [active, setActive] = useState(defaultIndex < 0 ? -1 : Math.min(Math.max(defaultIndex, 0), count - 1));
+  const hasActive = active >= 0 && active < count;
 
   const prefersReduced =
     typeof window !== 'undefined' && window.matchMedia
@@ -68,20 +71,22 @@ const AccordionGallery = ({
 
       panels.forEach((panel, i) => {
         if (!panel) return;
-        const isActive = i === active;
+        const isActive = hasActive && i === active;
         const media = mediaRefs.current[i];
         const bar = barRefs.current[i];
         const text = textRefs.current[i];
+        const detail = detailRefs.current[i];
+        const info = infoRefs.current[i];
 
-        const rot = isActive ? 0 : i < active ? tilt : -tilt;
+        const rot = !hasActive ? 0 : isActive ? 0 : i < active ? tilt : -tilt;
         const rotProp = vertical ? { rotateX: -rot } : { rotateY: rot };
 
-        tl.to(panel, { flexGrow: isActive ? grow : 1, ...rotProp, duration: dur, ease }, 0);
+        tl.to(panel, { flexGrow: isActive ? grow : 1, ...rotProp, filter: !hasActive || isActive ? "blur(0px)" : "blur(3px)", duration: dur, ease }, 0);
 
         if (media) {
           const drift = Math.max(-1.5, Math.min(1.5, active - i));
           const shift = drift * parallax * mediaSize * 0.06;
-          const gray = grayscale ? (isActive ? 0 : 1) : 0;
+          const gray = grayscale ? (hasActive ? (isActive ? 0 : 1) : 0) : 0;
           tl.to(
             media,
             {
@@ -90,7 +95,7 @@ const AccordionGallery = ({
               x: vertical ? 0 : isActive ? 0 : shift,
               y: vertical ? (isActive ? 0 : shift) : 0,
               '--ag-gray': gray,
-              '--ag-dim': isActive ? 0 : 0.35,
+              '--ag-dim': hasActive ? (isActive ? 0 : 0.35) : 0,
               duration: dur,
               ease
             },
@@ -99,10 +104,11 @@ const AccordionGallery = ({
         }
 
         if (showLabels && bar && text) {
+          const captionParts = [bar, text, detail, info].filter(Boolean);
           if (isActive) {
-            tl.to([bar, text], { opacity: 1, x: 0, duration: dur, ease, stagger: prefersReduced ? 0 : stagger }, 0);
+            tl.to(captionParts, { opacity: 1, x: 0, duration: dur, ease, stagger: prefersReduced ? 0 : stagger }, 0);
           } else {
-            tl.to([bar, text], { opacity: 0, x: -14, duration: dur * 0.6, ease }, 0);
+            tl.to(captionParts, { opacity: 0, x: -14, duration: dur * 0.6, ease }, 0);
           }
         }
       });
@@ -210,7 +216,7 @@ const AccordionGallery = ({
             role="listitem"
             tabIndex={0}
             aria-current={isActive ? 'true' : undefined}
-            aria-label={item.label}
+            aria-label={item.detail ? `${item.label}. ${item.detail}` : item.label}
           >
             <span className="ag-panel__frame">
               <span className="ag-panel__media" ref={el => (mediaRefs.current[i] = el)}>
@@ -221,14 +227,52 @@ const AccordionGallery = ({
             {showLabels && (
               <span className="ag-panel__label" aria-hidden="true">
                 <span className="ag-panel__bar" ref={el => (barRefs.current[i] = el)} />
-                <span className="ag-panel__text" ref={el => (textRefs.current[i] = el)}>
-                  {item.label}
-                </span>
+                <span className="ag-panel__text" ref={el => (textRefs.current[i] = el)}>{item.label}</span>
+                {item.detail ? <small className="ag-panel__detail" ref={el => (detailRefs.current[i] = el)}>{item.detail}</small> : null}
               </span>
             )}
+            {item.info?.length ? (
+              <span className={`ag-panel__info ${i < Math.ceil(count / 2) ? 'ag-panel__info--right' : 'ag-panel__info--left'}`} ref={el => (infoRefs.current[i] = el)}>
+                <strong>{item.label}</strong>
+                <small>{item.detail}</small>
+                <span className="ag-panel__info-list">
+                  {item.info.map((line, index) => <span key={index}><i aria-hidden="true">•</i>{line}</span>)}
+                </span>
+              </span>
+            ) : null}
           </Tag>
         );
       })}
+      {hasActive && items[active] ? (
+        <div
+          className="ag-spotlight"
+          style={{
+            '--spot-surface': items[active].palette?.surface || '#CBB092',
+            '--spot-ink': items[active].palette?.ink || '#281E18',
+            '--spot-muted': items[active].palette?.muted || '#5A4032',
+            '--spot-accent': items[active].palette?.accent || '#B86545',
+            '--spot-bullet': items[active].palette?.bullet || '#B86545'
+          }}
+          role="dialog"
+          aria-label={`Details for ${items[active].label}`}
+          onMouseEnter={() => setActive(active)}
+          onMouseLeave={() => setActive(-1)}
+        >
+          <div className="ag-spotlight__photo">
+            <img src={items[active].image} alt={items[active].alt || items[active].label || ''} draggable="false" />
+            <span className="ag-spotlight__photo-shade" />
+            <span className="ag-spotlight__photo-label">{items[active].label}</span>
+          </div>
+          <div className="ag-spotlight__info">
+            <span className="ag-spotlight__eyebrow">A closer look</span>
+            <h3>{items[active].label}</h3>
+            <p>{items[active].detail}</p>
+            <ul>
+              {(items[active].info || []).map((line, index) => <li key={index}><i aria-hidden="true">•</i><span>{line}</span></li>)}
+            </ul>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };

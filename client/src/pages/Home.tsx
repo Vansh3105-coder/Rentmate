@@ -23,75 +23,63 @@ import { startLogin } from "@/const";
 import StaggeredMenu, { type StaggeredMenuItem } from "@/components/StaggeredMenu";
 import AccordionGallery from "@/components/AccordionGallery";
 
-type Property = {
-  src: string;
-  alt: string;
-  title: string;
-  subtitle: string;
-  price: string;
-  tag: string;
-  detail: string;
+import { properties, type Property } from "@/data/properties";
+const propertyFacts: Record<string, string[]> = {
+  "The Courtyard Flat": [
+    "Two-bedroom apartment with a calm courtyard outlook",
+    "Indiranagar location near cafes, metro, and daily essentials",
+    "Dedicated work-from-home nook with strong natural light",
+    "Leafy balcony that opens from the living space",
+    "Warm kitchen with generous storage and dining space",
+    "Managed community with a quiet, lived-in atmosphere",
+    "Best suited to couples, small families, or focused professionals",
+    "₹42,000 monthly rent with no hidden listing fee",
+    "Move-in conversation and viewing arranged through Nestly"
+  ],
+  "House on 9th": [
+    "Spacious three-bedroom house in Kalyani Nagar",
+    "Private garden for slow mornings, pets, and small gatherings",
+    "Generous windows keep the living areas bright throughout the day",
+    "Large kitchen designed for hosting and everyday cooking",
+    "Flexible room that works as an office, studio, or guest room",
+    "Residential street with quick access to shops and restaurants",
+    "A strong fit for families or a group sharing a full home",
+    "₹68,000 monthly rent with the home story clearly listed",
+    "Schedule a thoughtful viewing before making a decision"
+  ],
+  "Mango House PG": [
+    "Warm co-living PG in HSR Layout for easy everyday living",
+    "Private room with comfortable shared common areas",
+    "Homemade dinners served twice a week by the house team",
+    "Quiet corners for study, calls, and decompression",
+    "Good access to offices, cafes, gyms, and neighborhood markets",
+    "Run with clear house rules and no mystery move-in fee",
+    "Ideal for students, first-job movers, and new-to-city residents",
+    "₹18,500 monthly rent with the essentials kept transparent",
+    "Meet the space and ask questions before you move in"
+  ],
+  "The Terrace Studio": [
+    "Compact studio with a generous private terrace in Powai",
+    "Character-filled interior with soft daylight and practical storage",
+    "Quick access to the lake, cafes, and a slower morning routine",
+    "Open living and sleeping zone that is easy to make your own",
+    "Terrace works for plants, reading, evening tea, or a small table",
+    "Low-maintenance setup for independent city living",
+    "A good fit for a solo resident or a couple who loves outdoor space",
+    "₹31,500 monthly rent with the important details up front",
+    "View the studio in person and picture your daily rhythm"
+  ]
 };
 
-const properties: Property[] = [
-  {
-    src: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1000&q=85&auto=format&fit=crop",
-    alt: "Sunlit living room in a contemporary apartment",
-    title: "The Courtyard Flat",
-    subtitle: "Indiranagar, Bengaluru",
-    price: "₹42,000 / month",
-    tag: "Apartment",
-    detail: "A breezy two-bedroom with a work-from-home nook, leafy balcony, and a community that feels like a small neighbourhood.",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1000&q=85&auto=format&fit=crop",
-    alt: "Warm modern kitchen and dining room",
-    title: "House on 9th",
-    subtitle: "Kalyani Nagar, Pune",
-    price: "₹68,000 / month",
-    tag: "House",
-    detail: "A calm three-bedroom home with generous light, a private garden, and the kind of kitchen that makes you want to host.",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=1000&q=85&auto=format&fit=crop",
-    alt: "Minimal bedroom with neutral bedding",
-    title: "Mango House PG",
-    subtitle: "HSR Layout, Bengaluru",
-    price: "₹18,500 / month",
-    tag: "PG",
-    detail: "A beautifully run co-living home with homemade dinners twice a week, quiet corners, and no mystery fee at move-in.",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1000&q=85&auto=format&fit=crop",
-    alt: "Relaxed apartment lounge with soft daylight",
-    title: "The Terrace Studio",
-    subtitle: "Powai, Mumbai",
-    price: "₹31,500 / month",
-    tag: "Studio",
-    detail: "A compact, character-filled studio with an enormous terrace and quick access to the lake, cafes, and a slower morning.",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1000&q=85&auto=format&fit=crop",
-    alt: "Bright dining area with sculptural pendant light",
-    title: "Palm Court",
-    subtitle: "Alwarpet, Chennai",
-    price: "₹54,000 / month",
-    tag: "Apartment",
-    detail: "A generous two-bedroom made for long lunches, with a resident manager and a move-in experience that is refreshingly clear.",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=1000&q=85&auto=format&fit=crop",
-    alt: "Modern living space with textured walls",
-    title: "The Brickline Home",
-    subtitle: "Jubilee Hills, Hyderabad",
-    price: "₹74,000 / month",
-    tag: "House",
-    detail: "A considered four-bedroom with a shaded courtyard, smart storage, and room for the people you want to keep close.",
-  },
-];
+const propertyPalettes: Record<string, { surface: string; ink: string; muted: string; accent: string; bullet: string }> = {
+  "The Courtyard Flat": { surface: "#D8C7AE", ink: "#211D1A", muted: "#5D5145", accent: "#B86F4C", bullet: "#A95C3F" },
+  "House on 9th": { surface: "#D7D1BD", ink: "#26302A", muted: "#596052", accent: "#A87854", bullet: "#9B6749" },
+  "Mango House PG": { surface: "#D2AE86", ink: "#2B211B", muted: "#654A38", accent: "#C4764E", bullet: "#AF5D3F" },
+  "The Terrace Studio": { surface: "#C9AA8D", ink: "#241D1A", muted: "#604A3D", accent: "#A96748", bullet: "#98563D" }
+};
 
 const mobileMenuItems: StaggeredMenuItem[] = [
-  { label: "Explore homes", ariaLabel: "Explore available homes", link: "#explore" },
+  { label: "Explore homes", ariaLabel: "Explore available homes", link: "/explore" },
   { label: "Find a roommate", ariaLabel: "Find a roommate", link: "#roommates" },
   { label: "Stories", ariaLabel: "Read Nestly stories", link: "#stories" },
   { label: "Sign in", ariaLabel: "Sign in to Nestly", link: "/onboarding" },
@@ -281,7 +269,7 @@ function Home() {
   const [searchValue, setSearchValue] = useState("");
 
   const featured = useMemo(() => properties.slice(0, 4), []);
-  const accordionItems = useMemo(() => featured.map((property) => ({ image: property.src, label: property.title, link: "", alt: property.alt })), [featured]);
+  const accordionItems = useMemo(() => featured.map((property) => ({ image: property.src, label: property.title, detail: `${property.subtitle} · ${property.price}`, info: propertyFacts[property.title], palette: propertyPalettes[property.title], link: "", alt: property.alt })), [featured]);
 
   useEffect(() => {
     const revealItems = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
@@ -310,7 +298,7 @@ function Home() {
           <span>Nestly</span>
         </a>
         <nav className="main-nav" aria-label="Main navigation">
-          <a href="#explore">Explore homes</a>
+          <a href="/explore">Explore homes</a>
           <a href="#roommates" onClick={(event) => { event.preventDefault(); showInterest("Roommate matching is coming next"); }}>Find a roommate</a>
           <a href="#stories">Stories</a>
         </nav>
@@ -329,7 +317,7 @@ function Home() {
               <h1>Find a place that feels like <em>you.</em></h1>
               <p className="hero-subcopy">Homes, rooms, and housemates with a little more care behind them. Search less. Feel at home sooner.</p>
               <div className="hero-actions">
-                <button type="button" className="button button--peach" onClick={() => scrollToId("explore")}>Find my next place <ArrowUpRight size={17} /></button>
+                <button type="button" className="button button--peach" onClick={() => { window.location.href = "/explore"; }}>Find my next place <ArrowUpRight size={17} /></button>
                 <button type="button" className="button button--ghost-light" onClick={() => { window.location.href = "/owner"; }}>I have a place to list <ArrowRight size={17} /></button>
               </div>
               <div className="hero-note"><span className="avatar-stack"><span>R</span><span>A</span><span>M</span><span>+</span></span><span>Trusted by people making their next move</span></div>
@@ -348,7 +336,7 @@ function Home() {
               </div>
               <div className="search-divider" />
               <div className="search-filter"><span>Move-in</span><strong>Anytime</strong><ChevronDown size={15} /></div>
-              <button type="button" className="search-submit" onClick={() => { showInterest(searchValue ? `We'll start with ${searchValue}` : "Tell us where you want to live"); scrollToId("explore"); }}><Search size={18} /> <span>Search homes</span></button>
+              <button type="button" className="search-submit" onClick={() => { window.location.href = searchValue ? `/explore?q=${encodeURIComponent(searchValue)}` : "/explore"; }}><Search size={18} /> <span>Search homes</span></button>
             </div>
           </div>
         </div>
@@ -364,14 +352,14 @@ function Home() {
             <p>We’re building a more considered way to rent — one that puts context around every place, clarity around every step, and people back in the middle of it all.</p>
           </div>
           <div className="feature-grid">
-            {featureCards.map((card) => { const Icon = card.icon; return <article className={`feature-card ${card.className}`} key={card.title} data-reveal="scale" style={{ "--reveal-delay": `${featureCards.indexOf(card) * 90}ms` } as CSSProperties}><span className="feature-icon"><Icon size={21} /></span><span className="eyebrow">{card.eyebrow}</span><h3>{card.title}</h3><p>{card.copy}</p><a href={card.eyebrow === "For owners" ? "#owners" : "#explore"}>See how it works <ArrowUpRight size={15} /></a></article>; })}
+            {featureCards.map((card) => { const Icon = card.icon; return <article className={`feature-card ${card.className}`} key={card.title} data-reveal="scale" style={{ "--reveal-delay": `${featureCards.indexOf(card) * 90}ms` } as CSSProperties}><span className="feature-icon"><Icon size={21} /></span><span className="eyebrow">{card.eyebrow}</span><h3>{card.title}</h3><p>{card.copy}</p><a href={card.eyebrow === "For owners" ? "#owners" : "/explore"}>See how it works <ArrowUpRight size={15} /></a></article>; })}
             <article className="feature-stamp"><span className="stamp-star">✳</span><span>Made for<br /><em>real life.</em></span><span className="stamp-arrow"><ArrowDownRight size={18} /></span></article>
           </div>
         </section>
 
         <section className="explore-section section-pad" id="explore" data-reveal="up">
-          <div className="section-heading section-heading--row"><div><span className="eyebrow">A few good places</span><h2>Start with a feeling.</h2></div><a href="#explore" className="inline-link" onClick={(event) => { event.preventDefault(); showInterest("The full explore experience is coming soon"); }}>Explore all homes <ArrowUpRight size={16} /></a></div>
-          <AccordionGallery items={accordionItems} defaultIndex={1} accentColor="#C27855" overlayColor="#1F1E1D" textColor="#FAF8F5" height={390} gap={12} radius={16} expandRatio={0.48} duration={0.6} parallax={0.45} tilt={5} trigger="hover" grayscale showLabels className="property-accordion" />
+          <div className="section-heading section-heading--row"><div><span className="eyebrow">A few good places</span><h2>Start with a feeling.</h2></div><a href="/explore" className="inline-link">Explore all homes <ArrowUpRight size={16} /></a></div>
+          <AccordionGallery items={accordionItems} defaultIndex={-1} accentColor="#C27855" overlayColor="#1F1E1D" textColor="#FAF8F5" height={390} gap={12} radius={16} expandRatio={0.68} duration={1.15} parallax={0.45} tilt={5} trigger="hover" grayscale showLabels className="property-accordion" />
         </section>
 
         <section className="flip-section section-pad" id="stories" data-reveal="up">
@@ -387,7 +375,7 @@ function Home() {
         <section className="closing-section section-pad" data-reveal="up"><div className="closing-inner"><span className="eyebrow">Your next place is out there</span><h2>Make room for <em>what’s next.</em></h2><p>Join the early list for thoughtful homes, honest listings, and a calmer way to move.</p><button type="button" className="button button--peach" onClick={() => showInterest("You’re on the early list")}>Join the early list <ArrowUpRight size={17} /></button><div className="closing-squiggle">⌁</div></div></section>
       </main>
 
-      <footer className="site-footer"><div className="footer-top"><div className="footer-brand"><a href="#top" className="brand brand--footer"><span className="brand-mark"><span /><span /></span><span>Nestly</span></a><p>Find the place<br />that finds you back.</p></div><div className="footer-links"><div><span>Explore</span><a href="#explore">Homes</a><a href="#how-it-works">How it works</a><a href="#stories">Stories</a></div><div><span>For owners</span><a href="#owners">List your place</a><a href="#owners">Owner guide</a><a href="#owners">Good to know</a></div><div><span>Say hello</span><a href="mailto:hello@nestly.place">hello@nestly.place</a><a href="#top">Instagram <MoveUpRight size={13} /></a><a href="#top">LinkedIn <MoveUpRight size={13} /></a></div></div></div><div className="footer-bottom"><span>© 2026 Nestly Technologies</span><span>Made for people in motion <Heart size={13} fill="currentColor" /></span><div><a href="#top">Privacy</a><a href="#top">Terms</a></div></div></footer>
+      <footer className="site-footer"><div className="footer-top"><div className="footer-brand"><a href="#top" className="brand brand--footer"><span className="brand-mark"><span /><span /></span><span>Nestly</span></a><p>Find the place<br />that finds you back.</p></div><div className="footer-links"><div><span>Explore</span><a href="/explore">Homes</a><a href="#how-it-works">How it works</a><a href="#stories">Stories</a></div><div><span>For owners</span><a href="#owners">List your place</a><a href="#owners">Owner guide</a><a href="#owners">Good to know</a></div><div><span>Say hello</span><a href="mailto:hello@nestly.place">hello@nestly.place</a><a href="#top">Instagram <MoveUpRight size={13} /></a><a href="#top">LinkedIn <MoveUpRight size={13} /></a></div></div></div><div className="footer-bottom"><span>© 2026 Nestly Technologies</span><span>Made for people in motion <Heart size={13} fill="currentColor" /></span><div><a href="#top">Privacy</a><a href="#top">Terms</a></div></div></footer>
     </div>
   );
 }

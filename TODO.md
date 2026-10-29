@@ -28,5 +28,13 @@
 - Add protected tRPC procedures and server-side ownership checks for listing reads and mutations.
 - Keep the route manifest synchronized with `/`, `/onboarding`, `/owner`, and `/404`.
 
-## 5. Future marketplace phases — open
+## 5. Explore Homes directory — complete
+- Add a dedicated `/explore` route that shows all current Nestly property listings using the shared homepage property data.
+- Provide search across title, location, property type, and listing detail, with reset behavior for empty results.
+- Provide property-type filters for all homes, apartments, houses, PGs, and studios.
+- Provide curated, price-low-to-high, and price-high-to-low sorting.
+- Show responsive listing cards with images, location, monthly rent, listing detail, saved-home controls, and verified-detail messaging.
+- Keep the Explore Homes experience responsive for desktop, tablet, and mobile layouts and synchronize `/manus-routes.json` with the new route.
+
+## 6. Future marketplace phases — open
 - Renter saved homes, inquiries, viewing requests, property details, search filters, owner messaging, verification review tools, payments, agreements, and admin moderation remain future milestones.
