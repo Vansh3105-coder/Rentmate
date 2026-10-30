@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express from "express";
+import express, { type Express } from "express";
 import { createServer } from "http";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
@@ -8,9 +8,8 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 
-async function startServer() {
+export function createApiApp(): Express {
   const app = express();
-  const server = createServer(app);
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -19,14 +18,24 @@ async function startServer() {
     res.set("Cache-Control", "no-store").type("application/javascript").send(publicPlatformScript());
   });
   registerOAuthRoutes(app);
-  // tRPC API
   app.use(
     "/api/trpc",
     createExpressMiddleware({
       router: appRouter,
       createContext,
-    })
+    }),
   );
+
+  return app;
+}
+
+export function createVercelApp(): Express {
+  return createApiApp();
+}
+
+async function startServer() {
+  const app = createApiApp();
+  const server = createServer(app);
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
@@ -40,4 +49,7 @@ async function startServer() {
   server.listen(port, "0.0.0.0", () => console.log(`Server listening on port ${port}`));
 }
 
-startServer().catch(error => { console.error(error); process.exit(1); });
+// Vercel imports the Express app as a serverless function and must not start a listener.
+if (process.env.VERCEL !== "1") {
+  startServer().catch(error => { console.error(error); process.exit(1); });
+}
