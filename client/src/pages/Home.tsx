@@ -6,7 +6,6 @@ import {
   ArrowUpRight,
   BadgeCheck,
   Check,
-  ChevronDown,
   ChevronRight,
   Clock3,
   Compass,
@@ -14,7 +13,6 @@ import {
   Home as HomeIcon,
   KeyRound,
   MoveUpRight,
-  Search,
   ShieldCheck,
   Sparkles,
   Star,
@@ -58,7 +56,7 @@ function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 function AnimatedHeroHeadline() {
-  const titles = ["right.", "beautiful.", "like home.", "made for you.", "worth staying for."];
+  const titles = ["right.", "beautiful.", "like home.", "made for you.", "easy."];
   const [titleNumber, setTitleNumber] = useState(0);
 
   useEffect(() => {
@@ -243,8 +241,6 @@ function FlipCard({ item, index }: { item: Property; index: number }) {
 }
 
 function Home() {
-  const [searchValue, setSearchValue] = useState("");
-
   useEffect(() => {
     const revealItems = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     if (revealItems.length === 0) return;
@@ -298,21 +294,6 @@ function Home() {
             <div className="spiral-showcase"><InfiniteSpiral items={properties} /></div>
           </div>
         </section>
-
-        <div className="search-section" aria-label="Search available homes" data-reveal="up">
-          <div className="hero-search-wrap">
-            <div className="hero-search">
-              <div className="search-icon"><Search size={19} /></div>
-              <div className="search-input-wrap">
-                <label htmlFor="hero-search">Where do you want to live?</label>
-                <input id="hero-search" value={searchValue} onChange={(event) => setSearchValue(event.target.value)} placeholder="City, neighbourhood, or landmark" />
-              </div>
-              <div className="search-divider" />
-              <div className="search-filter"><span>Move-in</span><strong>Anytime</strong><ChevronDown size={15} /></div>
-              <button type="button" className="search-submit" onClick={() => { window.location.href = searchValue ? `/explore?q=${encodeURIComponent(searchValue)}` : "/explore"; }}><Search size={18} /> <span>Search homes</span></button>
-            </div>
-          </div>
-        </div>
 
         <section className="trust-strip" aria-label="Nestora highlights" data-reveal="up">
           <p className="trust-intro">The good kind of different <span>—</span> for the way you live now.</p>
