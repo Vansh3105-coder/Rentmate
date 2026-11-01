@@ -1,0 +1,112 @@
+.property-carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 420px;
+  padding: 14px 0 38px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(250, 248, 245, .86), rgba(216, 199, 174, .28));
+}
+
+.property-carousel__swiper {
+  width: min(290px, 72vw);
+  height: 390px;
+  padding-bottom: 32px;
+}
+
+.property-carousel__slide {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(250, 248, 245, .8);
+  border-radius: 24px;
+  background: #d8c7ae;
+  box-shadow: 0 22px 44px rgba(31, 30, 29, .16);
+}
+
+.property-carousel__slide img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.property-carousel__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(31, 30, 29, .04) 42%, rgba(31, 30, 29, .76) 100%);
+}
+
+.property-carousel__caption {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+  display: grid;
+  gap: 5px;
+  color: #faf8f5;
+}
+
+.property-carousel__caption strong {
+  font-family: var(--font-display);
+  font-size: clamp(25px, 3vw, 34px);
+  font-weight: 500;
+  line-height: .95;
+  letter-spacing: -.045em;
+}
+
+.property-carousel__caption > span:last-child {
+  color: rgba(250, 248, 245, .82);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.property-carousel__tag {
+  width: max-content;
+  padding: 6px 9px;
+  border: 1px solid rgba(250, 248, 245, .38);
+  border-radius: 999px;
+  color: #faf8f5;
+  background: rgba(31, 30, 29, .24);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.property-carousel .swiper-pagination-bullet {
+  background: var(--clay);
+  opacity: .35;
+}
+
+.property-carousel .swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+@media (max-width: 780px) {
+  .property-carousel {
+    min-height: 370px;
+    padding: 8px 0 30px;
+    border-radius: 18px;
+  }
+
+  .property-carousel__swiper {
+    width: min(250px, 72vw);
+    height: 335px;
+  }
+
+  .property-carousel__caption {
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+  }
+
+  .property-carousel__caption strong {
+    font-size: 28px;
+  }
+}
