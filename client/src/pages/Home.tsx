@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowDownRight,
   ArrowRight,
@@ -20,7 +21,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import StaggeredMenu, { type StaggeredMenuItem } from "@/components/StaggeredMenu";
-import PropertyCarousel from "@/components/PropertyCarousel";
+import LiquidGlassFlipCard from "@/components/LiquidGlassFlipCard";
 
 import { properties, type Property } from "@/data/properties";
 const mobileMenuItems: StaggeredMenuItem[] = [
@@ -55,6 +56,37 @@ const featureCards = [
 
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function AnimatedHeroHeadline() {
+  const titles = ["right.", "beautiful.", "like home.", "made for you.", "worth staying for."];
+  const [titleNumber, setTitleNumber] = useState(0);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setTitleNumber((current) => (current + 1) % titles.length);
+    }, 2200);
+    return () => window.clearTimeout(timeoutId);
+  }, [titleNumber, titles.length]);
+
+  return (
+    <h1 className="hero-animated-heading">
+      <span>Find a place that feels</span>
+      <span className="hero-rotating-word-wrap" aria-live="polite">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={titles[titleNumber]}
+            className="hero-rotating-word"
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "-100%" }}
+            transition={{ type: "spring", stiffness: 58, damping: 13 }}
+          >
+            {titles[titleNumber]}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+    </h1>
+  );
 }
 
 function InfiniteSpiral({ items }: { items: Property[] }) {
@@ -255,7 +287,7 @@ function Home() {
           <div className="hero-content">
             <div className="hero-copy">
               <span className="announcement"><Sparkles size={13} /> A softer way to move</span>
-              <h1>Find a place that feels like <em>you.</em></h1>
+              <AnimatedHeroHeadline />
               <p className="hero-subcopy">Homes, rooms, and housemates with a little more care behind them. Search less. Feel at home sooner.</p>
               <div className="hero-actions">
                 <button type="button" className="button button--peach" onClick={() => { window.location.href = "/explore"; }}>Find my next place <ArrowUpRight size={17} /></button>
@@ -300,7 +332,7 @@ function Home() {
 
         <section className="explore-section section-pad" id="explore" data-reveal="up">
           <div className="section-heading section-heading--row"><div><span className="eyebrow">A few good places</span><h2>Start with a feeling.</h2></div><a href="/explore" className="inline-link">Explore all homes <ArrowUpRight size={16} /></a></div>
-          <PropertyCarousel items={properties.slice(0, 4)} className="property-accordion" loop />
+          <div className="liquid-glass-grid">{properties.slice(0, 4).map((property, index) => <LiquidGlassFlipCard key={property.title} property={property} index={index} />)}</div>
         </section>
 
         <section className="flip-section section-pad" id="stories" data-reveal="up">
