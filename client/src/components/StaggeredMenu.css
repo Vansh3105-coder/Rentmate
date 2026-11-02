@@ -12,14 +12,14 @@
 .staggered-menu-panel { position: absolute; inset: 0 0 0 auto; width: min(100%, 420px); padding: 112px 30px 28px; overflow-y: auto; background: var(--cream); box-shadow: -24px 0 60px rgba(48,49,44,.12); pointer-events: auto; }
 .sm-panel-inner { display: flex; flex-direction: column; min-height: 100%; gap: 24px; }
 .sm-panel-list, .sm-socials-list { list-style: none; margin: 0; padding: 0; }
-.sm-panel-list { display: flex; flex-direction: column; gap: 10px; }
+.sm-panel-list { display: flex; flex-direction: column; gap: 15px; }
 .sm-panel-itemWrap { overflow: hidden; line-height: 1; }
-.sm-panel-item { position: relative; display: inline-block; padding-right: 44px; color: var(--ink); font-family: "Newsreader", Georgia, serif; font-size: clamp(40px, 12vw, 58px); font-weight: 500; line-height: .94; letter-spacing: -.045em; text-decoration: none; transition: color .2s ease; }
+.sm-panel-item { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 36px; column-gap: 18px; width: 100%; padding-right: 0; color: var(--ink); font-family: "Newsreader", Georgia, serif; font-size: clamp(40px, 12vw, 58px); font-weight: 500; line-height: .94; letter-spacing: -.045em; text-decoration: none; transition: color .2s ease; }
 .sm-panel-item:hover, .sm-panel-item:focus-visible { color: var(--clay); }
 .sm-panel-item:focus-visible { outline: 0; }
 .sm-panel-itemLabel { display: inline-block; transform-origin: 50% 100%; }
 .sm-panel-list[data-numbering] { counter-reset: smItem; }
-.sm-panel-list[data-numbering] .sm-panel-item::after { counter-increment: smItem; content: counter(smItem, decimal-leading-zero); position: absolute; top: 5px; right: 0; color: var(--clay); font-family: "DM Sans", Arial, sans-serif; font-size: 11px; font-weight: 800; letter-spacing: .08em; opacity: var(--sm-num-opacity, 0); }
+.sm-panel-list[data-numbering] .sm-panel-item::after { counter-increment: smItem; content: counter(smItem, decimal-leading-zero); position: static; grid-column: 2; justify-self: end; align-self: start; margin-top: 5px; color: var(--clay); font-family: "DM Sans", Arial, sans-serif; font-size: 11px; font-weight: 800; letter-spacing: .08em; opacity: var(--sm-num-opacity, 0); }
 .sm-socials { margin-top: auto; padding-top: 28px; border-top: 1px solid var(--line); }
 .sm-socials-title { margin: 0 0 12px; color: var(--forest); font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
 .sm-socials-list { display: flex; flex-wrap: wrap; gap: 16px; }
