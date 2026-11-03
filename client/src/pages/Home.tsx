@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowDownRight,
@@ -29,11 +29,9 @@ const mobileMenuItems: StaggeredMenuItem[] = [
   { label: "For owners", ariaLabel: "Learn about listing as an owner", link: "#owners" },
 ];
 
-const trustPoints = [
-  { value: "12k+", label: "places that feel lived in" },
-  { value: "4.8/5", label: "average resident rating" },
-  { value: "0", label: "hidden listing fees" },
-];
+const heroProperty = properties[1] ?? properties[0];
+
+
 
 const featureCards = [
   {
@@ -56,7 +54,7 @@ function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 function AnimatedHeroHeadline() {
-  const titles = ["right.", "beautiful.", "like home.", "made for you.", "easy."];
+  const titles = ["alive.", "warm.", "like home.", "made for you.", "easy."];
   const [titleNumber, setTitleNumber] = useState(0);
 
   useEffect(() => {
@@ -68,7 +66,7 @@ function AnimatedHeroHeadline() {
 
   return (
     <h1 className="hero-animated-heading">
-      <span>Find a place that feels</span>
+      <span>Spaces that feel</span>
       <span className="hero-rotating-word-wrap" aria-live="polite">
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
@@ -84,125 +82,6 @@ function AnimatedHeroHeadline() {
         </AnimatePresence>
       </span>
     </h1>
-  );
-}
-
-function InfiniteSpiral({ items }: { items: Property[] }) {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const progressRef = useRef(0);
-  const targetProgressRef = useRef(0);
-  const hoveredRef = useRef(false);
-  const draggingRef = useRef(false);
-  const lastPointerYRef = useRef(0);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root || items.length === 0) return;
-
-    let frameId = 0;
-    let previousTime = performance.now();
-    let lastScrollY = window.scrollY;
-    let visible = true;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }, { threshold: 0.02 });
-    observer.observe(root);
-
-    const handleScroll = () => {
-      if (visible) targetProgressRef.current += (window.scrollY - lastScrollY) / 420;
-      lastScrollY = window.scrollY;
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    const render = (time: number) => {
-      const delta = Math.min((time - previousTime) / 1000, 0.05);
-      previousTime = time;
-      if (visible && !reducedMotion.matches && !hoveredRef.current && !draggingRef.current) targetProgressRef.current += 0.48 * delta;
-      const followBlend = 1 - Math.exp(-delta * (draggingRef.current ? 24 : 10));
-      progressRef.current += (targetProgressRef.current - progressRef.current) * followBlend;
-
-      const bounds = root.getBoundingClientRect();
-      const fit = Math.min(1, bounds.width / 420, bounds.height / 520);
-      const radius = Math.min(178, Math.max(90, bounds.width * 0.37)) * fit;
-      const count = items.length;
-      const half = count / 2;
-
-      cardRefs.current.forEach((card, index) => {
-        if (!card) return;
-        let offset = index - progressRef.current;
-        offset = ((offset + half) % count + count) % count - half;
-        const edge = Math.min(Math.abs(offset) / Math.max(half, 1), 1);
-        const fade = 1 - Math.max(0, (edge - 0.54) / 0.46);
-        const focus = 1 - Math.min(Math.abs(offset) / 4.4, 1);
-        const angle = offset * (360 / 7);
-        const radians = (angle * Math.PI) / 180;
-        const x = Math.sin(radians) * radius;
-        const z = Math.cos(radians) * radius;
-        const depth = (z / Math.max(radius, 1) + 1) / 2;
-        const scale = (0.86 + focus * 0.26) * fit;
-        const blur = Math.max(0, edge - 0.5) * 5;
-        card.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${offset * 70 * fit}px, ${z}px) rotateZ(${offset * 2.2}deg) scale(${scale})`;
-        card.style.opacity = fade.toFixed(3);
-        card.style.filter = blur > 0.1 ? `blur(${blur.toFixed(2)}px)` : "none";
-        card.style.zIndex = String(Math.round(depth * 10000) + index);
-        card.style.pointerEvents = fade > 0.2 ? "auto" : "none";
-      });
-      frameId = requestAnimationFrame(render);
-    };
-
-    frameId = requestAnimationFrame(render);
-    return () => {
-      cancelAnimationFrame(frameId);
-      observer.disconnect();
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [items]);
-
-  return (
-    <div
-      ref={rootRef}
-      className="infinite-spiral"
-      style={{ perspective: "1000px" }}
-      aria-label="Infinite spiral property gallery"
-      onMouseEnter={() => { hoveredRef.current = true; }}
-      onMouseLeave={() => { hoveredRef.current = false; draggingRef.current = false; }}
-      onPointerDown={(event) => {
-        if (event.button !== 0) return;
-        draggingRef.current = true;
-        lastPointerYRef.current = event.clientY;
-        event.currentTarget.setPointerCapture(event.pointerId);
-      }}
-      onPointerMove={(event) => {
-        if (!draggingRef.current) return;
-        const delta = event.clientY - lastPointerYRef.current;
-        lastPointerYRef.current = event.clientY;
-        targetProgressRef.current -= delta / 70;
-      }}
-      onPointerUp={(event) => {
-        draggingRef.current = false;
-        if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-      }}
-      onPointerCancel={() => { draggingRef.current = false; }}
-    >
-      <div className="infinite-spiral__stage" role="list" aria-label="Available properties">
-        {items.map((item, index) => (
-          <button
-            type="button"
-            key={item.title}
-            ref={(node) => { cardRefs.current[index] = node; }}
-            className="infinite-spiral__item"
-            style={{ borderRadius: 17 }}
-            onClick={() => toast.success(`${item.title} saved to your shortlist`)}
-            aria-label={`Save ${item.title}`}
-          >
-            <img className="infinite-spiral__image" src={item.src} alt={item.alt} draggable={false} />
-            <span className="infinite-spiral__shade" />
-            <span className="infinite-spiral__meta"><span>{item.tag}</span><strong>{item.title}</strong></span>
-          </button>
-        ))}
-      </div>
-      <div className="spiral-note"><span className="eyebrow eyebrow--light">Scroll · drag · pause</span><strong>A living shelf of available places.</strong></div>
-    </div>
   );
 }
 
@@ -276,29 +155,30 @@ function Home() {
           <a className="button button--dark button--small" href="#owners">For owners <ArrowUpRight size={15} /></a>
         </div>
       </header>
-      <StaggeredMenu items={mobileMenuItems} socialItems={[{ label: "hello@nestora.place", link: "mailto:hello@nestora.place" }]} colors={["#d9e3d3", "#bc7d5b"]} accentColor="#bc7d5b" />
+      <StaggeredMenu items={mobileMenuItems} socialItems={[{ label: "hello@nestora.place", link: "mailto:hello@nestora.place" }]} colors={["#A8B99F", "#D79A57"]} accentColor="#D79A57" />
 
       <main id="top">
-        <section className="hero-section">
+        <section className="hero-section hero-section--property">
+          <img className="hero-backdrop-image" src="/manus-storage/async-images/J0F9b0NeFHHgeObigU0Anm/image-1.webp" alt="" aria-hidden="true" />
+          <div className="hero-backdrop-overlay" />
           <div className="hero-content">
             <div className="hero-copy">
               <span className="announcement"><Sparkles size={13} /> A softer way to move</span>
               <AnimatedHeroHeadline />
               <p className="hero-subcopy">Homes, rooms, and housemates with a little more care behind them. Search less. Feel at home sooner.</p>
               <div className="hero-actions">
-                <button type="button" className="button button--peach" onClick={() => { window.location.href = "/explore"; }}>Find my next place <ArrowUpRight size={17} /></button>
-                <button type="button" className="button button--ghost-light" onClick={() => scrollToId("owners")}>I have a place to list <ArrowRight size={17} /></button>
+                <button type="button" className="button button--peach" onClick={() => { window.location.href = "/explore"; }}>Explore homes <ArrowUpRight size={17} /></button>
+                <button type="button" className="button button--ghost-light" onClick={() => scrollToId("owners")}>List your place <ArrowRight size={17} /></button>
               </div>
               <div className="hero-note"><span className="avatar-stack"><span>R</span><span>A</span><span>M</span><span>+</span></span><span>Trusted by people making their next move</span></div>
             </div>
-            <div className="spiral-showcase"><InfiniteSpiral items={properties} /></div>
+
           </div>
+
+          <div className="hero-scroll-cue"><span>Scroll</span><ArrowDownRight size={15} /></div>
         </section>
 
-        <section className="trust-strip" aria-label="Nestora highlights" data-reveal="up">
-          <p className="trust-intro">The good kind of different <span>—</span> for the way you live now.</p>
-          <div className="trust-points">{trustPoints.map((point) => <div className="trust-point" key={point.value}><strong>{point.value}</strong><span>{point.label}</span></div>)}</div>
-        </section>
+
 
         <section className="story-section section-pad" id="how-it-works" data-reveal="up">
           <div className="section-heading section-heading--split">

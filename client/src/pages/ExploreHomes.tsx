@@ -72,7 +72,7 @@ export default function ExploreHomes() {
         <nav className="explore-header__nav" aria-label="Explore navigation"><a href="/">Home</a><a className="is-active" href="/explore">Explore homes</a><a href="/#owners">For owners</a></nav>
         <a href="/#owners" className="button button--dark button--small">For owners <ArrowUpRight size={15} /></a>
       </header>
-      <StaggeredMenu items={mobileMenuItems} socialItems={[{ label: "hello@nestora.place", link: "mailto:hello@nestora.place" }]} colors={["#d9e3d3", "#bc7d5b"]} accentColor="#bc7d5b" />
+      <StaggeredMenu items={mobileMenuItems} socialItems={[{ label: "hello@nestora.place", link: "mailto:hello@nestora.place" }]} colors={["#A8B99F", "#D79A57"]} accentColor="#D79A57" />
 
       <main>
         <section className="explore-hero explore-hero--polaroid">
