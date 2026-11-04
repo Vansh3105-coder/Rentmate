@@ -159,7 +159,7 @@ function Home() {
 
       <main id="top">
         <section className="hero-section hero-section--property">
-          <img className="hero-backdrop-image" src="/manus-storage/async-images/J0F9b0NeFHHgeObigU0Anm/image-1.webp" alt="" aria-hidden="true" />
+          <img className="hero-backdrop-image" src={heroProperty.src} alt="" aria-hidden="true" />
           <div className="hero-backdrop-overlay" />
           <div className="hero-content">
             <div className="hero-copy">
