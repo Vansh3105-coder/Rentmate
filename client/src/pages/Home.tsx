@@ -159,7 +159,10 @@ function Home() {
 
       <main id="top">
         <section className="hero-section hero-section--property">
-          <img className="hero-backdrop-image" src={heroProperty.src} alt="" aria-hidden="true" />
+          <picture>
+            <source media="(max-width: 780px)" srcSet="/hero-living-room-mobile.jpg" />
+            <img className="hero-backdrop-image" src="/hero-living-room.png" alt="" aria-hidden="true" />
+          </picture>
           <div className="hero-backdrop-overlay" />
           <div className="hero-content">
             <div className="hero-copy">
